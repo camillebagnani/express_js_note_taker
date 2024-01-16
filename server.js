@@ -1,4 +1,6 @@
 const fs = require('fs');
+const util = require('util');
+const readFromFile = util.promisify(fs.readFile)
 
 // Import Express.js
 const express = require('express');
@@ -24,7 +26,13 @@ app.get('/notes', (req, res) => {
     res.sendFile(path.join(__dirname, '/public/notes.html'))
 });
 
-app.post('/notes', (req, res) => {
+app.get('/api/notes', (req, res) => {
+    // Go to the db, get all the notes
+    console.info(`${req.method} request received for notes`);
+    readFromFile('./db/db.json').then((data) => res.json(JSON.parse(data)));
+});
+
+app.post('/api/notes', (req, res) => {
     console.info(`${req.method} request received to add a review.`);
 
     const { title, text } = req.body;
@@ -55,6 +63,12 @@ app.post('/notes', (req, res) => {
     } else {
         res.status(500).json('Error in posting note');
     }
+});
+
+app.delete(`/api/notes/:id`, (req, res) => {
+    const noteId = req.params.id; 
+    res.status(201).json({status: 'success', message: `Note ID ${noteId} deleted`});
+
 });
 
 app.listen(PORT, () => {
