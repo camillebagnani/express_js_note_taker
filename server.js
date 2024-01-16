@@ -1,6 +1,8 @@
 const fs = require('fs');
 const util = require('util');
-const readFromFile = util.promisify(fs.readFile)
+const readFromFile = util.promisify(fs.readFile);
+const { v4: uuidv4 } = require('uuid');
+const randomId = uuidv4();
 
 // Import Express.js
 const express = require('express');
@@ -39,6 +41,7 @@ app.post('/api/notes', (req, res) => {
 
     if (title && text) {
         const newNote = {
+            id: randomId,
             title,
             text,
         };
@@ -66,7 +69,7 @@ app.post('/api/notes', (req, res) => {
 });
 
 app.delete(`/api/notes/:id`, (req, res) => {
-    const noteId = req.params.id; 
+    const noteId = req.params.id;
     res.status(201).json({status: 'success', message: `Note ID ${noteId} deleted`});
 
 });
