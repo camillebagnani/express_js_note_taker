@@ -9,9 +9,7 @@ const path = require('path');
 // Initializes instance of Express.js
 const app = express();
 
-const PORT = 3001;
-
-const notesData = require('./db/db.json');
+const PORT = process.env.PORT || 3001;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -42,7 +40,7 @@ app.post('/notes', (req, res) => {
             body: newNote,
         };
 
-        const readFile = fs.readFileSync(`./db/db.json`);
+        const readFile = fs.readFileSync('./db/db.json');
         const dbArray = JSON.parse(readFile.toString());
 
         dbArray.push(newNote);
