@@ -2,7 +2,6 @@ const fs = require('fs');
 const util = require('util');
 const readFromFile = util.promisify(fs.readFile);
 const { v4: uuidv4 } = require('uuid');
-const randomId = uuidv4();
 
 // Import Express.js
 const express = require('express');
@@ -41,7 +40,7 @@ app.post('/api/notes', (req, res) => {
 
     if (title && text) {
         const newNote = {
-            id: randomId,
+            id: uuidv4(),
             title,
             text,
         };
