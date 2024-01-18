@@ -35,7 +35,7 @@ app.get('/api/notes', (req, res) => {
 });
 
 app.post('/api/notes', (req, res) => {
-    console.info(`${req.method} request received to add a review.`);
+    console.info(`${req.method} request received to add a note.`);
 
     const { title, text } = req.body;
 
@@ -70,7 +70,19 @@ app.post('/api/notes', (req, res) => {
 
 app.delete(`/api/notes/:id`, (req, res) => {
     const noteId = req.params.id;
-    res.status(201).json({status: 'success', message: `Note ID ${noteId} deleted`});
+
+    const readFile = fs.readFileSync('./db/db.json');
+    const dbArray = JSON.parse(readFile.toString());
+
+    // remove the object from the array where the id of the object equals the given id
+    const newArray = dbArray.filter(note => note.id !== noteId);
+
+    fs.writeFile(`db/db.json`, JSON.stringify(newArray), (err) =>
+        err ? console.error(err)
+            : console.log(`Note was sucessfully deleted.`)
+    );
+
+    res.status(201).json({ status: 'success', message: `Note ID ${noteId} deleted` });
 
 });
 
